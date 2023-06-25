@@ -1,13 +1,17 @@
 import { Button, Table } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Alert, Space, Spin } from "antd";
+import { Spin } from "antd";
+import { CSVLink } from "react-csv";
+import DownloadCSV from "./DownloadCSV";
 
 const TableContainer = ({}) => {
   const columns = [
     {
       title: "Product",
       dataIndex: "thumbnail",
+      width: 150,
+      fixed: "left",
       render: (product) => (
         <img
           src={product}
@@ -21,31 +25,39 @@ const TableContainer = ({}) => {
     {
       title: "Title",
       dataIndex: "title",
+      width: 250,
+      fixed: "left",
     },
     {
       title: "Price",
       dataIndex: "price",
       sorter: (a, b) => a.price - b.price,
+      render: (price) => "$" + price,
+      width: 100,
     },
     {
       title: "Discount Percentage",
       dataIndex: "discountPercentage",
       sorter: (a, b) => a.discountPercentage - b.discountPercentage,
       render: (price) => price + "%",
+      width: 150,
     },
     {
       title: "Rating",
       dataIndex: "rating",
       sorter: (a, b) => a.rating - b.rating,
+      width: 100,
     },
     {
       title: "Brand",
       dataIndex: "brand",
+      width: 150,
     },
     {
       title: "category",
       dataIndex: "category",
       filterMode: "tree",
+      width: 150,
       filters: [
         {
           text: "Mens",
@@ -156,7 +168,13 @@ const TableContainer = ({}) => {
     {
       title: "Details",
       dataIndex: "id",
-      render: (product) => <Link to={"/details/" + product}>View Details</Link>,
+      width: 120,
+      fixed: "right",
+      render: (product) => (
+        <Link to={"/details/" + product} className="text-[#3e94ff]">
+          View Details
+        </Link>
+      ),
     },
   ];
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -165,6 +183,7 @@ const TableContainer = ({}) => {
     data: null,
     error: null,
   });
+  const [selectedRows, setSelectedRows] = useState([]);
   const [filteredData, setFilteredData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -174,6 +193,15 @@ const TableContainer = ({}) => {
   useEffect(() => {
     startFn();
   }, []);
+  useEffect(() => {
+    console.log(selectedRowKeys);
+    if (response.data) {
+      let exportData = response.data.filter((product) =>
+        selectedRowKeys.includes(product.id)
+      );
+      setSelectedRows(exportData);
+    }
+  }, [selectedRowKeys]);
   const start = () => {
     setLoading(true);
     getData();
@@ -296,15 +324,22 @@ const TableContainer = ({}) => {
       </div>
 
       {response.apiStatus === 1 && (
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={response?.apiStatus === 1 && filteredData}
-          rowKey="id"
-          scroll={{
-            y: 400,
-          }}
-        />
+        <div>
+          <div className="flex justify-between px-2 py-3">
+            <h2 className="font-bold text-xl">List of Products</h2>
+            <DownloadCSV selectedRows={selectedRows} allData={response.data} />
+          </div>
+          <Table
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={response?.apiStatus === 1 && filteredData}
+            rowKey="id"
+            scroll={{
+              y: 350,
+              x: 200,
+            }}
+          />
+        </div>
       )}
       {response.apiStatus === 0 && (
         <div className="h-[70vh] flex justify-center items-center">

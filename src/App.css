@@ -46,3 +46,7 @@
 .ant-table-fixed-header {
   margin-bottom: 2rem !important;
 }
+
+.ant-table-filter-dropdown-btns .ant-btn:nth-child(2) {
+  background-color: #358cf5;
+}
