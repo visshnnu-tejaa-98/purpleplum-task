@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.image {
+  height: 80px !important;
+  width: 80px !important;
+}
+
+.ant-table,
+.ant-table-fixed-header {
+  margin-bottom: 2rem !important;
+}
