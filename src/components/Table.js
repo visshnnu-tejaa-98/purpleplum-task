@@ -31,7 +31,7 @@ const TableContainer = ({}) => {
     {
       title: "Price",
       dataIndex: "price",
-      sorter: (a, b) => a.price - b.price,
+      sorter: (a, b) => +a.price - +b.price,
       render: (price) => "$" + price,
       width: 100,
     },
@@ -39,13 +39,13 @@ const TableContainer = ({}) => {
       title: "Discount Percentage",
       dataIndex: "discountPercentage",
       sorter: (a, b) => a.discountPercentage - b.discountPercentage,
-      render: (price) => price + "%",
+      render: (price) => +price + "%",
       width: 150,
     },
     {
       title: "Rating",
       dataIndex: "rating",
-      sorter: (a, b) => a.rating - b.rating,
+      sorter: (a, b) => +a.rating - +b.rating,
       width: 100,
     },
     {
@@ -292,12 +292,14 @@ const TableContainer = ({}) => {
               onChange={(e) => setSearchTerm(e.target.value)}
               required
             />
-            <span
-              onClick={() => handleSubmit(false)}
-              className="material-symbols-outlined absolute top-[10px] right-[18px] cursor-pointer hover:scale-[1.2] duration-150"
-            >
-              close
-            </span>
+            {searchTerm && (
+              <span
+                onClick={() => handleSubmit(false)}
+                className="material-symbols-outlined absolute top-[10px] right-[18px] cursor-pointer hover:scale-[1.2] duration-150"
+              >
+                close
+              </span>
+            )}
           </div>
           <button
             type="button"
