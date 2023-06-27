@@ -1,6 +1,7 @@
 import { Spin } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useHistory, useNavigate } from "react-router-dom";
+import ReactToPdf from "react-to-pdf";
 
 const Details = () => {
   const [param, setParam] = useState(null);
@@ -9,6 +10,7 @@ const Details = () => {
     data: null,
     error: null,
   });
+  const ref = React.createRef();
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
@@ -48,7 +50,7 @@ const Details = () => {
           >
             arrow_back
           </span>
-          <div class="mx-auto flex flex-wrap items-center lg:w-4/5">
+          <div class="mx-auto flex flex-wrap items-center lg:w-4/5" ref={ref}>
             <img
               alt="Nike Air Max 21A"
               class="h-64 w-full rounded object-cover lg:h-96 lg:w-1/2"
@@ -154,12 +156,17 @@ const Details = () => {
                   response.data.price * (response.data.discountPercentage / 100)
                 )?.toFixed(2)}
               </span>
-              <button
-                type="button"
-                class="block mt-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-              >
-                Add to Cart
-              </button>
+              <ReactToPdf targetRef={ref} filename="product.pdf">
+                {({ toPdf }) => (
+                  <button
+                    type="button"
+                    class="block mt-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    onClick={toPdf}
+                  >
+                    Download
+                  </button>
+                )}
+              </ReactToPdf>
             </div>
           </div>
         </div>
